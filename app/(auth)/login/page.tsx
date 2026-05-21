@@ -210,6 +210,17 @@ export default function LoginPage() {
             </button>
           </form>
         </div>
+
+        {/* Logo Necton */}
+        <div style={{ display: "flex", justifyContent: "center", marginTop: "2rem" }}>
+          <Image
+            src="/logo-necton.png"
+            alt="Necton — Uma empresa BTG Pactual"
+            width={180}
+            height={40}
+            style={{ objectFit: "contain", opacity: 0.6 }}
+          />
+        </div>
       </div>
     </div>
   );
