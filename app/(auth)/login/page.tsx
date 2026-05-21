@@ -213,12 +213,11 @@ export default function LoginPage() {
 
         {/* Logo Necton */}
         <div style={{ display: "flex", justifyContent: "center", marginTop: "2rem" }}>
-          <Image
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
             src="/logo-necton.png"
             alt="Necton — Uma empresa BTG Pactual"
-            width={180}
-            height={40}
-            style={{ objectFit: "contain", opacity: 0.6 }}
+            style={{ width: "180px", height: "auto", opacity: 0.6, objectFit: "contain" }}
           />
         </div>
       </div>

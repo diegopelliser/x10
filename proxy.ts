@@ -2,6 +2,16 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // Deixa recursos internos do Next.js e arquivos estáticos passarem
+  if (
+    pathname.startsWith("/_next/") ||
+    /\.(?:svg|png|jpg|jpeg|gif|webp|ico|woff2?|ttf|eot)$/i.test(pathname)
+  ) {
+    return NextResponse.next({ request });
+  }
+
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -43,6 +53,10 @@ export async function proxy(request: NextRequest) {
 
 export const proxyConfig = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|logo\\.png|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/dashboard/:path*",
+    "/dre/:path*",
+    "/analises/:path*",
+    "/lancamentos/:path*",
+    "/login",
   ],
 };
