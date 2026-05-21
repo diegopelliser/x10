@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { LayoutDashboard, FileText, PlusCircle, TrendingUp, BarChart2 } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { LayoutDashboard, FileText, PlusCircle, TrendingUp, BarChart2, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import { supabase } from "@/lib/supabase";
 
 const navItems = [
   { href: "/dashboard",   label: "Dashboard",    icon: LayoutDashboard },
@@ -15,6 +16,13 @@ const navItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const router   = useRouter();
+
+  async function handleLogout() {
+    await supabase.auth.signOut();
+    router.push("/login");
+    router.refresh();
+  }
 
   return (
     <aside className="sidebar fixed left-0 top-0 h-full w-60 flex flex-col z-40"
@@ -79,9 +87,26 @@ export function Sidebar() {
         })}
       </nav>
 
-      {/* Footer com indicador de versão */}
-      <div className="px-6 py-4" style={{ borderTop: "1px solid var(--border)" }}>
-        <div className="flex items-center gap-2">
+      {/* Footer */}
+      <div className="px-3 py-4 space-y-3" style={{ borderTop: "1px solid var(--border)" }}>
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150"
+          style={{ color: "var(--muted-foreground)", fontFamily: "var(--font-jakarta)" }}
+          onMouseEnter={e => {
+            (e.currentTarget as HTMLElement).style.background = "rgba(239,68,68,0.08)";
+            (e.currentTarget as HTMLElement).style.color = "var(--danger)";
+          }}
+          onMouseLeave={e => {
+            (e.currentTarget as HTMLElement).style.background = "transparent";
+            (e.currentTarget as HTMLElement).style.color = "var(--muted-foreground)";
+          }}
+        >
+          <LogOut size={16} className="flex-shrink-0" />
+          Sair
+        </button>
+
+        <div className="flex items-center gap-2 px-3">
           <TrendingUp size={12} style={{ color: "var(--gold)" }} />
           <span className="text-[10px] tracking-wide uppercase"
                 style={{ color: "var(--muted-foreground)", fontFamily: "var(--font-jakarta)" }}>

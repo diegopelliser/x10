@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Plus_Jakarta_Sans } from "next/font/google";
-import { Sidebar } from "@/components/layout/Sidebar";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
@@ -31,13 +30,7 @@ export default function RootLayout({
       className={`${cormorant.variable} ${jakarta.variable} h-full`}
     >
       <body className="h-full bg-background text-foreground antialiased">
-        <div className="flex h-full">
-          <Sidebar />
-          {/* Conteúdo principal com offset da sidebar */}
-          <main className="flex-1 ml-60 min-h-full overflow-y-auto">
-            {children}
-          </main>
-        </div>
+        {children}
         <Toaster richColors position="top-right" />
       </body>
     </html>
