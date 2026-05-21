@@ -1,26 +1,246 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
+
+/* ─── X10 Investimentos Design System ─────────────────────── */
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Backgrounds */
+  --color-bg-base:    var(--bg-base);
+  --color-bg-surface: var(--bg-surface);
+  --color-bg-card:    var(--bg-card);
+  --color-bg-hover:   var(--bg-hover);
+
+  /* Brand */
+  --color-gold:       var(--gold);
+  --color-gold-light: var(--gold-light);
+  --color-gold-muted: var(--gold-muted);
+
+  /* Semântico */
+  --color-success:    var(--success);
+  --color-danger:     var(--danger);
+  --color-warning:    var(--warning);
+
+  /* Shadcn token mapping */
+  --color-background:         var(--background);
+  --color-foreground:         var(--foreground);
+  --color-card:               var(--card);
+  --color-card-foreground:    var(--card-foreground);
+  --color-popover:            var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary:            var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary:          var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted:              var(--muted);
+  --color-muted-foreground:   var(--muted-foreground);
+  --color-accent:             var(--accent);
+  --color-accent-foreground:  var(--accent-foreground);
+  --color-destructive:        var(--destructive);
+  --color-border:             var(--border);
+  --color-input:              var(--input);
+  --color-ring:               var(--ring);
+  --color-sidebar-ring:       var(--sidebar-ring);
+  --color-sidebar-border:     var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent:     var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary:    var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar:            var(--sidebar);
+  --color-chart-1:            var(--chart-1);
+  --color-chart-2:            var(--chart-2);
+  --color-chart-3:            var(--chart-3);
+  --color-chart-4:            var(--chart-4);
+  --color-chart-5:            var(--chart-5);
+  --color-ring:               var(--ring);
+
+  /* Tipografia */
+  --font-display: var(--font-cormorant), "Georgia", serif;
+  --font-sans:    var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-mono:    "JetBrains Mono", ui-monospace, monospace;
+
+  /* Raios */
+  --radius-sm:  calc(var(--radius) * 0.6);
+  --radius-md:  calc(var(--radius) * 0.8);
+  --radius-lg:  var(--radius);
+  --radius-xl:  calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ─── Paleta X10 (dark-first) ──────────────────────────────── */
+:root {
+  /* Fundos */
+  --bg-base:    #0B1829;
+  --bg-surface: #0D1F3C;
+  --bg-card:    #132338;
+  --bg-hover:   #1A3A5C;
+
+  /* Acento dourado */
+  --gold:       #C8A84B;
+  --gold-light: #E2C76A;
+  --gold-muted: rgba(200, 168, 75, 0.12);
+
+  /* Semântico */
+  --success: #22C55E;
+  --danger:  #EF4444;
+  --warning: #F59E0B;
+
+  /* Shadcn tokens — dark theme como padrão */
+  --background:            #0B1829;
+  --foreground:            #F5F7FA;
+  --card:                  #132338;
+  --card-foreground:       #F5F7FA;
+  --popover:               #132338;
+  --popover-foreground:    #F5F7FA;
+  --primary:               #C8A84B;
+  --primary-foreground:    #0B1829;
+  --secondary:             #1A3A5C;
+  --secondary-foreground:  #F5F7FA;
+  --muted:                 #1A3A5C;
+  --muted-foreground:      #8A95A3;
+  --accent:                #1A3A5C;
+  --accent-foreground:     #F5F7FA;
+  --destructive:           #EF4444;
+  --border:                rgba(255, 255, 255, 0.06);
+  --input:                 rgba(255, 255, 255, 0.08);
+  --ring:                  rgba(200, 168, 75, 0.4);
+  --radius:                0.75rem;
+
+  /* Charts */
+  --chart-1: #22C55E;
+  --chart-2: #EF4444;
+  --chart-3: #C8A84B;
+  --chart-4: #3B82F6;
+  --chart-5: #8B5CF6;
+
+  /* Sidebar */
+  --sidebar:                      #0D1F3C;
+  --sidebar-foreground:           #F5F7FA;
+  --sidebar-primary:              #C8A84B;
+  --sidebar-primary-foreground:   #0B1829;
+  --sidebar-accent:               #1A3A5C;
+  --sidebar-accent-foreground:    #F5F7FA;
+  --sidebar-border:               rgba(200, 168, 75, 0.2);
+  --sidebar-ring:                 rgba(200, 168, 75, 0.4);
+}
+
+/* ─── Base styles ───────────────────────────────────────────── */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    @apply font-sans;
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  /* Números: sempre tabular para evitar jitter */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Headings usam a fonte display */
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ─── Utilitários de card financeiro ───────────────────────── */
+@layer utilities {
+  .card-financial {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+
+  .card-kpi-gold {
+    border-color: rgba(200, 168, 75, 0.25);
+    background: linear-gradient(135deg, var(--bg-card) 0%, rgba(200, 168, 75, 0.06) 100%);
+  }
+
+  .card-kpi-success {
+    border-color: rgba(34, 197, 94, 0.2);
+    background: linear-gradient(135deg, var(--bg-card) 0%, rgba(34, 197, 94, 0.05) 100%);
+  }
+
+  .card-kpi-danger {
+    border-color: rgba(239, 68, 68, 0.2);
+    background: linear-gradient(135deg, var(--bg-card) 0%, rgba(239, 68, 68, 0.05) 100%);
+  }
+
+  .text-gold {
+    color: var(--gold);
+  }
+
+  .text-gold-light {
+    color: var(--gold-light);
+  }
+
+  .border-gold {
+    border-color: rgba(200, 168, 75, 0.25);
+  }
+
+  .bg-gold-muted {
+    background: var(--gold-muted);
+  }
+}
+
+/* ─── Animações ─────────────────────────────────────────────── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease both;
+}
+
+/* Stagger para listas */
+.stagger-1 { animation-delay: 50ms; }
+.stagger-2 { animation-delay: 100ms; }
+.stagger-3 { animation-delay: 150ms; }
+.stagger-4 { animation-delay: 200ms; }
+.stagger-5 { animation-delay: 250ms; }
+
+/* ─── Print / PDF ───────────────────────────────────────────── */
+@media print {
+  .no-print { display: none !important; }
+  .sidebar  { display: none !important; }
+
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 11px;
+  }
+
+  .card-financial {
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: none !important;
+    background: white !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .page-break { page-break-before: always; }
 }
