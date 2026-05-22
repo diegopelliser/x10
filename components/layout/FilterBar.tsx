@@ -16,7 +16,10 @@ interface FilterBarProps {
 
 // Período com dados importados
 const MIN = { mes: 9, ano: 2025 };
-const MAX = { mes: 3, ano: 2026 };
+// MAX dinâmico: mês anterior ao atual (dados sempre do mês fechado)
+// Atualiza automaticamente conforme o calendário avança
+const _hoje = new Date();
+const MAX = { mes: _hoje.getMonth() + 1, ano: _hoje.getFullYear() };
 
 function periodoEmNumero(mes: number, ano: number) {
   return ano * 12 + mes;
