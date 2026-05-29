@@ -28,6 +28,7 @@ SUPABASE_URL = os.getenv("NEXT_PUBLIC_SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_KEY") or os.getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY")
 EXCEL_PATH       = ROOT / "Assets" / "Fluxo Financeiro.xlsx"
 EXCEL_ABRIL_PATH = ROOT / "Assets" / "Dados Abril 2026.xlsx"
+EXCEL_MAIO_PATH  = ROOT / "Assets" / "Fluxo Financeiro maio26.xlsx"
 
 ABAS_MENSAIS = {
     "Setembro":       (9,  2025),
@@ -41,6 +42,10 @@ ABAS_MENSAIS = {
 
 ABAS_ABRIL = {
     "ABRIL 2026": (4, 2026),
+}
+
+ABAS_MAIO = {
+    "MAIO 2026": (5, 2026),
 }
 
 # Unidades que mapeiam para GDI (Garibaldi) — inclui verticais do escritório GDI
@@ -354,6 +359,27 @@ def main():
                 print(f"  ⚠  Aba '{nome_aba}' não encontrada em {EXCEL_ABRIL_PATH.name} — pulando")
                 continue
             ws = wb_abril[nome_aba]
+            registros, ignorados = ler_aba(ws, mes, ano)
+            for item in ignorados:
+                todos_ignorados.append({**item, "aba": nome_aba})
+            if not registros:
+                print(f"  ⚠  '{nome_aba}': nenhum registro válido")
+                continue
+            client.table("lancamentos").delete().eq("mes", mes).eq("ano", ano).execute()
+            for j in range(0, len(registros), 100):
+                client.table("lancamentos").insert(registros[j:j+100]).execute()
+            print(f"  ✓  '{nome_aba}': {len(registros)} importados, {len(ignorados)} ignorados")
+            total_importados += len(registros)
+
+    # ── Maio 2026 ──────────────────────────────────────────────────
+    if EXCEL_MAIO_PATH.exists():
+        print(f"\nAbrindo {EXCEL_MAIO_PATH.name}...")
+        wb_maio = openpyxl.load_workbook(EXCEL_MAIO_PATH, data_only=True)
+        for nome_aba, (mes, ano) in ABAS_MAIO.items():
+            if nome_aba not in wb_maio.sheetnames:
+                print(f"  ⚠  Aba '{nome_aba}' não encontrada em {EXCEL_MAIO_PATH.name} — pulando")
+                continue
+            ws = wb_maio[nome_aba]
             registros, ignorados = ler_aba(ws, mes, ano)
             for item in ignorados:
                 todos_ignorados.append({**item, "aba": nome_aba})

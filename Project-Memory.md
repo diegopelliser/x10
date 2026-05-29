@@ -1,6 +1,6 @@
 # Project Memory — X10 Investimentos · Controle Financeiro
-**Última atualização:** 2026-05-07
-**Sessões registradas:** 4
+**Última atualização:** 2026-05-29
+**Sessões registradas:** 5
 
 ---
 
@@ -207,6 +207,11 @@ Erros de importação corrigidos diretamente no Supabase via MCP:
 **Foco:** Correção de bugs na importação de dados — Comissões de Vendedores + Centro de Custo
 **Resultado:** 169 comissões de vendedores (R$ 242.666) agora corretamente classificadas; campo `centro_custo` adicionado ao banco com 7 verticais de negócio; TabComissoes exibe breakdown por vertical
 **Arquivos tocados:** scripts/import_excel.py, lib/supabase.ts, lib/queries.ts, app/analises/page.tsx, components/analises/TabComissoes.tsx, Project-Memory.md
+
+### Sessão 5 — 2026-05-29
+**Foco:** Importação de Maio 2026
+**Resultado:** 124 lançamentos de MAIO 2026 importados do arquivo `Assets/Fluxo Financeiro maio26.xlsx`; `import_excel.py` atualizado com `EXCEL_MAIO_PATH` e `ABAS_MAIO`; total acumulado no banco: 1013 registros (Set/2025–Maio/2026). Arquivo maio contém as mesmas abas históricas + ABRIL 2026 + MAIO 2026. Categorias novas (Bens de Pequeno Valor, Confraternizações, Investimentos, Previdência Privada, etc.) mapeadas corretamente para categorias existentes do sistema.
+**Arquivos tocados:** scripts/import_excel.py, Project-Memory.md
 
 ### Sessão 4 — 2026-05-07
 **Foco:** Reconciliação de dados, novas features em análises, importação Abril/2026
