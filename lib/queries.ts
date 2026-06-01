@@ -127,46 +127,37 @@ export async function getEvolucao(
   meses: number,
   unidade: Unidade | "TODOS" = "TODOS"
 ): Promise<EvolucaoMes[]> {
-  // Calcula o ano de início para não buscar dados irrelevantes e evitar o limite de 1000 linhas do Supabase
+  // Gera a lista dos últimos N meses a partir de hoje
   const hoje = new Date();
-  const inicioDate = new Date(hoje.getFullYear(), hoje.getMonth() - (meses - 1), 1);
-  const inicioAno = inicioDate.getFullYear();
+  const periodos: Array<{ ano: number; mes: number }> = [];
+  for (let i = meses - 1; i >= 0; i--) {
+    const d = new Date(hoje.getFullYear(), hoje.getMonth() - i, 1);
+    periodos.push({ ano: d.getFullYear(), mes: d.getMonth() + 1 });
+  }
 
-  let q = supabase
-    .from("lancamentos")
-    .select("mes, ano, tipo, valor")
-    .gte("ano", inicioAno)
-    .limit(10000);
-
-  const u = filtroUnidade(unidade);
-  if (u) q = q.eq("unidade", u);
-
-  const { data, error } = await q;
-  if (error) throw error;
-
-  const rows = (data ?? []) as Pick<Lancamento, "mes" | "ano" | "tipo" | "valor">[];
   const MESES_ABREV = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
+  const u = filtroUnidade(unidade);
 
-  // Deriva os períodos diretamente dos dados existentes, ordenados cronologicamente
-  // .slice(-meses) garante que apenas os últimos N meses são exibidos
-  const periodos = [...new Set(rows.map(r => `${r.ano}-${String(r.mes).padStart(2, "0")}`))]
-    .sort()
-    .slice(-meses)
-    .map(key => ({ ano: Number(key.slice(0, 4)), mes: Number(key.slice(5)) }));
+  // Uma query por mês em paralelo — igual ao getDRE — evita o limite de 1000 rows do Supabase
+  const resultados = await Promise.all(
+    periodos.map(async ({ mes, ano }) => {
+      let q = supabase
+        .from("lancamentos")
+        .select("tipo, valor")
+        .eq("mes", mes)
+        .eq("ano", ano);
+      if (u) q = q.eq("unidade", u);
+      const { data, error } = await q;
+      if (error) throw error;
+      const rows = (data ?? []) as Pick<Lancamento, "tipo" | "valor">[];
+      const receita  = rows.filter(r => r.tipo === "receita").reduce((s, r) => s + Number(r.valor), 0);
+      const deducoes = rows.filter(r => r.tipo !== "receita").reduce((s, r) => s + Number(r.valor), 0);
+      return { mes: MESES_ABREV[mes - 1], mesNum: mes, ano, receita, deducoes, resultado: receita - deducoes };
+    })
+  );
 
-  return periodos.map(({ mes, ano }) => {
-    const mRows = rows.filter(r => r.mes === mes && r.ano === ano);
-    const receita  = mRows.filter(r => r.tipo === "receita").reduce((s, r) => s + Number(r.valor), 0);
-    const deducoes = mRows.filter(r => r.tipo !== "receita").reduce((s, r) => s + Number(r.valor), 0);
-    return {
-      mes:       MESES_ABREV[mes - 1],
-      mesNum:    mes,
-      ano,
-      receita,
-      deducoes,
-      resultado: receita - deducoes,
-    };
-  });
+  // Remove meses sem dados do gráfico
+  return resultados.filter(r => r.receita > 0 || r.deducoes > 0);
 }
 
 export async function getTopCategorias(
