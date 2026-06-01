@@ -124,7 +124,7 @@ export async function getDRE(
 }
 
 export async function getEvolucao(
-  _meses: number,
+  meses: number,
   unidade: Unidade | "TODOS" = "TODOS"
 ): Promise<EvolucaoMes[]> {
   let q = supabase
@@ -141,8 +141,10 @@ export async function getEvolucao(
   const MESES_ABREV = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
 
   // Deriva os períodos diretamente dos dados existentes, ordenados cronologicamente
+  // .slice(-meses) garante que apenas os últimos N meses são exibidos
   const periodos = [...new Set(rows.map(r => `${r.ano}-${String(r.mes).padStart(2, "0")}`))]
     .sort()
+    .slice(-meses)
     .map(key => ({ ano: Number(key.slice(0, 4)), mes: Number(key.slice(5)) }));
 
   return periodos.map(({ mes, ano }) => {
