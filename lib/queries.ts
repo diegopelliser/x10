@@ -127,9 +127,16 @@ export async function getEvolucao(
   meses: number,
   unidade: Unidade | "TODOS" = "TODOS"
 ): Promise<EvolucaoMes[]> {
+  // Calcula o ano de início para não buscar dados irrelevantes e evitar o limite de 1000 linhas do Supabase
+  const hoje = new Date();
+  const inicioDate = new Date(hoje.getFullYear(), hoje.getMonth() - (meses - 1), 1);
+  const inicioAno = inicioDate.getFullYear();
+
   let q = supabase
     .from("lancamentos")
-    .select("mes, ano, tipo, valor");
+    .select("mes, ano, tipo, valor")
+    .gte("ano", inicioAno)
+    .limit(10000);
 
   const u = filtroUnidade(unidade);
   if (u) q = q.eq("unidade", u);
