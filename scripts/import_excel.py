@@ -38,6 +38,7 @@ ABAS_MENSAIS = {
     "JANEIRO 2026":   (1,  2026),
     "FEVEREIRO 2026": (2,  2026),
     "MARÇO 2026":     (3,  2026),
+    "JUNHO 2026":     (6,  2026),
 }
 
 ABAS_ABRIL = {
@@ -75,7 +76,7 @@ CATS_IMPOSTO = [
 # Categorias da planilha que são custos variáveis
 CATS_CUSTO = [
     "comissões de vendedores", "comissao de vendedor", "comissão de vendedor",
-    "remuneração estagiário", "remuneracao estagiario",
+    "remuneração estagiário", "remuneracao estagiario", "estagi",
 ]
 
 # Categorias que são receita (quando valor positivo)

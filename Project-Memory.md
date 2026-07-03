@@ -1,6 +1,6 @@
 # Project Memory — X10 Investimentos · Controle Financeiro
-**Última atualização:** 2026-05-29
-**Sessões registradas:** 5
+**Última atualização:** 2026-07-03
+**Sessões registradas:** 6
 
 ---
 
@@ -192,6 +192,17 @@ Erros de importação corrigidos diretamente no Supabase via MCP:
 ---
 
 ## Histórico de Sessões
+
+### Sessão 6 — 2026-07-03
+**Foco:** Importação de Junho 2026 + correção de bug histórico de classificação (Remuneração de Estagiários)
+**Resultado:**
+- A partir deste mês, o arquivo `Assets/Fluxo Financeiro.xlsx` passou a concentrar todas as abas mensais (incluindo ABRIL 2026 e MAIO 2026, antes em arquivos separados) — a aba `JUNHO 2026` já veio dentro dele, sem precisar de arquivo novo
+- `ABAS_MENSAIS` em `import_excel.py` atualizado com `"JUNHO 2026": (6, 2026)`
+- **Bug encontrado:** `CATS_CUSTO` checava a substring `"remuneração estagiário"` (sem "de"), mas a categoria real na planilha é `"Remuneração de Estagiários"` — o "de" no meio quebrava o match, então todo lançamento do Estágio Pedro caía em `despesa / Outras Despesas` em vez de `custo / Remuneração de Estagiários`. Mesma classe de bug do problema de comissões documentado na Sessão 3 (substring parcial não bate com Unicode/texto completo)
+- Fix: adicionado `"estagi"` a `CATS_CUSTO` (substring ampla, sem colisão conhecida)
+- Corrigidos 9 registros históricos afetados no Supabase (Dez/2025 a Maio/2026, total R$ 4.127,76) via update direto de `tipo`/`categoria` — não altera o resultado/margem (é só reclassificação dentro dos custos), mas corrige a visão em DRE/Análises
+- Importação Junho/2026: 118 lançamentos, 0 ignorados, resultado bate exatamente com "Total geral" da planilha (R$ 49.906,84). Total acumulado no banco: 1131 registros (Set/2025–Jun/2026)
+**Arquivos tocados:** scripts/import_excel.py, Project-Memory.md, Assets/Fluxo Financeiro.xlsx
 
 ### Sessão 1 — 2026-05-06
 **Foco:** MVP completo — setup, banco, importação, dashboard, DRE, lançamentos
